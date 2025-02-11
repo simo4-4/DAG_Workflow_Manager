@@ -168,3 +168,4 @@ output.csv
 
 #venv environment
 plusgrade_env/
+performance_summary.json

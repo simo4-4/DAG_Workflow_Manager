@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -65,22 +66,21 @@ class DAGTaskManager:
         """Returns execution results and performance summary as a dictionary."""
         summary = {
             "tasks": {},
-            "total_execution_time": self.execution_time
+            "total_execution_time (sec)": self.execution_time
         }
 
         for task_name, task in self.tasks.items():
             summary["tasks"][task_name] = {
                 "status": "Success" if task.result is not None else "Failed",
-                "execution_time": task.execution_time,
-                "processed_items": task.result_count
+                "execution_time (sec)": task.execution_time,
+                "processed_items": task.result_count,
+                "throughput (item/sec)": task.result_count / task.execution_time if task.execution_time else 0
             }
 
         return summary
 
-    def print_summary(self):
-        """Prints execution results and performance summary."""
-        print("\nExecution Summary:")
-        for task_name, task in self.tasks.items():
-            status = "Success" if task.result is not None else "Failed"
-            print(f"- {task.name}: {status}, Time: {task.execution_time:.4f}s, Processed Items: {task.result_count}")
-        print(f"\nTotal execution time: {self.execution_time:.4f}s")
+    def save_summary(self, output_file):
+        """Saves execution results and performance summary to a JSON file."""
+        summary = self.get_summary()
+        with open(output_file, "w") as f:
+            json.dump(summary, f, indent=4)

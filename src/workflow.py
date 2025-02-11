@@ -42,15 +42,11 @@ class OfferWorkFlow(WorkFlow):
         self.task_manager.add_task(RequestTask("RESP Predict", self.config.resp_url, dependencies=["Transform"]))
         self.task_manager.add_task(Task("ATS-RESP Combiner", partial(combiner_task, output_format=Prediction), dependencies=["ATS Predict", "RESP Predict"]))
         self.task_manager.add_task(RequestTask("Offer Recommendation", self.config.offer_url, dependencies=["ATS-RESP Combiner"]))
-        self.task_manager.add_task(Task("Load", load_task, dependencies=["Transform", "ATS-RESP Combiner","Offer Recommendation"]))
+        self.task_manager.add_task(Task("Load", partial(load_task, output_file=self.config.output_path), dependencies=["Transform", "ATS-RESP Combiner","Offer Recommendation"]))
     
     def start(self):
         self.task_manager.execute()
-        self.task_manager.print_summary()
-        logger.info("Offer Workflow completed successfully")
-    
-if __name__ == "__main__":
-    config = OfferWorkFlowConfig.from_json_file("task_workflow_config.json")
-    workflow = OfferWorkFlow(config)
-    workflow.setup()
-    workflow.start()
+        logger.info(f"Workflow {self.config.name} completed successfully")
+
+    def save_summary(self, output_path):
+        self.task_manager.save_summary(output_path)

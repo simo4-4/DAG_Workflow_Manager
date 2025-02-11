@@ -1,10 +1,14 @@
 import csv
 from datetime import datetime
+import logging
 from typing import List
 import aiohttp
 import polars as pl
 from pydantic import BaseModel
 import asyncio
+
+logger = logging.getLogger()
+
 
 def extract_task(file_path):
     df = pl.read_csv(file_path)
@@ -62,4 +66,6 @@ def combiner_task(*results, output_format: type[BaseModel]):
 #     return "", 0
 
 def load_task(transform_result: pl.DataFrame, ats_resp_result: List, offer_result: List, output_file="output.csv"):
-    return "load", 0
+    logger.info(f"Writing transformed data to {output_file}")
+    transform_result.write_csv(output_file)
+    return "load", len(transform_result)

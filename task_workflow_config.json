@@ -5,5 +5,5 @@
     "ats_url": "http://localhost:8000/ml/ats/predict",
     "resp_url": "http://localhost:8000/ml/resp/predict",
     "offer_url": "http://localhost:8000/offer/assign",
-    "output_file": "output.csv"
+    "output_path": "workflow_results.csv"
 }

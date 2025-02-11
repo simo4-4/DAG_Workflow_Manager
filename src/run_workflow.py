@@ -1,6 +1,10 @@
 import argparse
+import logging
 from src.job_config import OfferWorkFlowConfig
 from src.workflow import OfferWorkFlow
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def main():
     # Create argument parser
@@ -14,11 +18,14 @@ def main():
     
     # Load the config from the provided JSON file or default
     config = OfferWorkFlowConfig.from_json_file(args.config)
+
+    logger.info(f"Loaded config: {config}")
     
     # Set up and start the workflow
     workflow = OfferWorkFlow(config)
     workflow.setup()
     workflow.start()
+    workflow.save_summary("performance_summary.json")
 
 if __name__ == "__main__":
     main()

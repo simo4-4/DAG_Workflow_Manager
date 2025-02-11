@@ -8,12 +8,16 @@ A DAG Task Manager
 
 Pros:
 - Fully Customizable
-- Independent tasks run in parallel
+- Independent tasks run in parallel threads
+
+Cons:
+- Dependent tasks will run one after the other and can't stream or use intermediate outputs
 
 To Improve:
 - Streaming between dependent tasks rather than wait for a task to be fully done
-- Error Handling is limited
+- Error handling is very limited and should be improved
 - Testing
+
 
 
 ## Setup
