@@ -43,10 +43,11 @@ I got inspired from the way Apache Airflow works! Would love to further improve 
 - **Dependent tasks** run sequentially and cannot stream or utilize intermediate outputs.
 
 ### Areas for Improvement:
-- **Streaming between dependent tasks** rather than waiting for one task to complete before starting the next.
-- **Error handling** is currently limited and needs enhancement.
-- **Testing** requires further development.
+- **Streaming between dependent tasks** rather than waiting for one task to complete before starting the next
+- **Error handling** is currently limited and needs enhancement
+- **Testing** requires further development
 - **More Metrics** can be further added
+- ***Better logging** can be further added
 
 ### Note
 In my OfferWorkFlow workflow, I intentionnally seperated the ATS, RESP, and OFFER tasks to demonstrate the DAG. The workflow would run faster if I combined them into one task

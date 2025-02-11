@@ -4,46 +4,46 @@
     "tasks": {
         "Extract": {
             "status": "Success",
-            "execution_time (sec)": 0.016442298889160156,
+            "execution_time (sec)": 0.022100210189819336,
             "processed_items": 4335,
-            "throughput (item/sec)": 263649.2639638072
+            "throughput (item/sec)": 196151.98058147688
         },
         "Transform": {
             "status": "Success",
-            "execution_time (sec)": 0.052969932556152344,
+            "execution_time (sec)": 0.04362010955810547,
             "processed_items": 890,
-            "throughput (item/sec)": 16801.984768557693
+            "throughput (item/sec)": 20403.433393821466
         },
         "ATS Predict": {
             "status": "Success",
-            "execution_time (sec)": 0.5457611083984375,
+            "execution_time (sec)": 0.5330679416656494,
             "processed_items": 890,
-            "throughput (item/sec)": 1630.7501328039814
+            "throughput (item/sec)": 1669.5807990611172
         },
         "RESP Predict": {
             "status": "Success",
-            "execution_time (sec)": 0.5411241054534912,
+            "execution_time (sec)": 0.5340137481689453,
             "processed_items": 890,
-            "throughput (item/sec)": 1644.724363654308
+            "throughput (item/sec)": 1666.6237583801526
         },
         "ATS-RESP Combiner": {
             "status": "Success",
-            "execution_time (sec)": 0.0006237030029296875,
+            "execution_time (sec)": 0.000804901123046875,
             "processed_items": 890,
-            "throughput (item/sec)": 1426961.2232415902
+            "throughput (item/sec)": 1105725.8767772513
         },
         "Offer Recommendation": {
             "status": "Success",
-            "execution_time (sec)": 0.270798921585083,
+            "execution_time (sec)": 0.27390408515930176,
             "processed_items": 890,
-            "throughput (item/sec)": 3286.5714338539883
+            "throughput (item/sec)": 3249.312617890963
         },
         "Load": {
             "status": "Success",
-            "execution_time (sec)": 0.005280017852783203,
+            "execution_time (sec)": 0.0042612552642822266,
             "processed_items": 890,
-            "throughput (item/sec)": 168560.03612390498
+            "throughput (item/sec)": 208858.6448833436
         }
     },
-    "total_execution_time (sec)": 0.8926370143890381
+    "total_execution_time (sec)": 0.8794989585876465
 }
