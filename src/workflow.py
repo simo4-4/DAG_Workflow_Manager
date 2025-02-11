@@ -50,7 +50,7 @@ class OfferWorkFlow(WorkFlow):
         logger.info("Offer Workflow completed successfully")
     
 if __name__ == "__main__":
-    config = OfferWorkFlowConfig(name="plusgrade", description="Reads from a CSV and calls the results of a couple APIs", csv_path="member_data.csv",ats_url="http://localhost:8000/ml/ats/predict", resp_url="http://localhost:8000/ml/resp/predict", offer_url="http://localhost:8000/offer/assign")
+    config = OfferWorkFlowConfig.from_json_file("task_workflow_config.json")
     workflow = OfferWorkFlow(config)
     workflow.setup()
     workflow.start()

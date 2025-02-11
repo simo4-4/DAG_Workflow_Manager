@@ -1,4 +1,6 @@
+import csv
 from datetime import datetime
+from typing import List
 import aiohttp
 import polars as pl
 from pydantic import BaseModel
@@ -55,6 +57,9 @@ def combiner_task(*results, output_format: type[BaseModel]):
     validated_results = [dict(zip(output_format.model_fields.keys(), values)) for values in zipped_results]
     return validated_results, len(validated_results)
 
-def load_task(*args):
-    # Placeholder for load task
-    return "", 0
+# def load_task(*args):
+#     # Placeholder for load task
+#     return "", 0
+
+def load_task(transform_result: pl.DataFrame, ats_resp_result: List, offer_result: List, output_file="output.csv"):
+    return "load", 0
