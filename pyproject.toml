@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "ml-application-eng-test"
+version = "0.1.0"
+description = ""
+authors = ["Kerem Ataman <kerem.ataman@points.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "^2.5.3"
+faker = "^22.0.0"
+pytest = "^7.4.4"
+fastapi = "^0.108.0"
+uvicorn = "^0.25.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
