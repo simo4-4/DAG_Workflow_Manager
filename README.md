@@ -5,14 +5,18 @@ Your task is to build a low-latency process that will process data, run the endp
 
 ## Solution: A DAG Task Manager
 
+### Inspiration:
+I got inspired from the way Apache Airflow works! Would love to further improve this implementation to possibly allow each task to run on a distributed server where a streaming queue such as kafka runs between the dependencies
+
 ### Usage:
 - To run the default configuration:  
-  `python -m src.run_workflow`
+  `python -m src.run_workflow` which will run a OfferWorkFlow instance by default
   
 - To run with a custom configuration:  
   `python -m src.run_workflow --config "your config path"`
   
-- To define and run your custom workflow with corresponding tasks, create a new workflow class and execute it through the `run_workflow` file.
+- To define and run your custom workflow with corresponding tasks, create a new workflow class, add it to the factory pattern, run it through the `run_workflow` file using the `--workflow` argument.
+(E.g, `python -m src.run_workflow --workflow NewWorkFlow --config "your config path"`)
 
 ### How It Works:
 1. **Task Definition & Dependencies**:  
@@ -42,7 +46,10 @@ Your task is to build a low-latency process that will process data, run the endp
 - **Streaming between dependent tasks** rather than waiting for one task to complete before starting the next.
 - **Error handling** is currently limited and needs enhancement.
 - **Testing** requires further development.
+- **More Metrics** can be further added
 
+### Note
+In my OfferWorkFlow workflow, I intentionnally seperated the ATS, RESP, and OFFER tasks to demonstrate the DAG. The workflow would run faster if I combined them into one task
 
 
 ## Setup

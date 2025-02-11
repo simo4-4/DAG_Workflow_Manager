@@ -16,7 +16,7 @@ class Task:
         self.execution_time = None
 
     def execute(self, dependency_results):
-        """Executes the task, passing dependency results as arguments."""
+        """Executes the task, passing dependenccy results as arguments"""
         start_time = time.time()
         try:
             logger.info(f"Executing task: {self.name}")
@@ -39,7 +39,7 @@ class AsyncTask:
         self.execution_time = None
 
     def execute(self, dependency_results):
-        """Executes the task, passing dependency results as arguments."""
+        """Executes the task, passing dependency results as arguments"""
         start_time = time.time()
         try:
             logger.info(f"Executing task: {self.name}")
@@ -53,7 +53,7 @@ class AsyncTask:
         return self.result
     
 class RequestTask(AsyncTask):
-    """Task class to post API requests on an eventloop."""
+    """Task class to post API requests on an event loop"""
     def __init__(self, name, api_url, dependencies=None):
         super().__init__(name, self.network_task, dependencies)
         self.api_url = api_url
@@ -75,10 +75,9 @@ class RequestTask(AsyncTask):
                 result = await response.json()
                 return list(result.values())[0]
         except Exception as e:
-            # Log or handle the error here, and return an error dict.
             self.failed_requests_count += 1
             logger.error(f"Error for data {data} for api {api_url}: {e}")
-            return {"error": str(e), "data": data}
+            return "ERROR"
 
     async def _post_data_with_semaphore(self, session: aiohttp.ClientSession, api_url: str, data: dict, semaphore: asyncio.Semaphore) -> dict:
         async with semaphore:

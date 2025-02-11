@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 from typing import List
 import polars as pl
@@ -41,7 +41,7 @@ def transform_task(extracted_data):
 
     member_time_sorted_df = date_time_converted_df.sort(by=["memberId", "LAST_TRANSACTION_TS"], descending=[False, False])
 
-    current_day = datetime.utcnow()
+    current_day = datetime.now(timezone.utc)
     member_aggregated_df_last_3 = member_time_sorted_df.group_by("memberId").agg([
         pl.col("lastTransactionPointsBought").tail(3).mean().alias("LAST_3_TRANSACTIONS_AVG_POINTS_BOUGHT"),
         pl.col("lastTransactionRevenueUSD").tail(3).mean().alias("LAST_3_TRANSACTIONS_AVG_REVENUE_USD"),
@@ -59,9 +59,8 @@ def combiner_task(*results, output_format: type[BaseModel]):
     validated_results = [dict(zip(output_format.model_fields.keys(), values)) for values in zipped_results]
     return validated_results, len(validated_results)
 
-def load_task(transform_result: pl.DataFrame, ats_resp_result: List, offer_result: List, output_file="output.csv"):
+def load_task(transform_result: pl.DataFrame, ats_result: List, resp_result:List, offer_result: List, output_file="output.csv"):
     logger.info(f"Writing transformed data to {output_file}")
-    # api_result_df = pl.DataFrame({"ATS_RESP":ats_resp_result, "OFFER":offer_result})
-    # transform_result = transform_result.extend(api_result_df)
+    transform_result = transform_result.with_columns(pl.Series("ATS", ats_result), pl.Series("RESP", resp_result), pl.Series("OFFER", offer_result))
     transform_result.write_csv(output_file)
     return "load", len(transform_result)

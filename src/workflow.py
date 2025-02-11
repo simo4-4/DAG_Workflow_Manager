@@ -5,7 +5,7 @@ import logging
 from src.dag_task_manager import DAGTaskManager
 from src.job_config import OfferWorkFlowConfig
 
-from src.offer_functions import combiner_task, extract_task, load_task, transform_task
+from src.offer_workflow_functions import combiner_task, extract_task, load_task, transform_task
 from src.prediction_ep import Prediction
 from src.task import AsyncTask, RequestTask, Task
 
@@ -19,7 +19,7 @@ class WorkFlow(ABC):
         raise NotImplementedError("start() must be implemented")
 
 class LargeCSVWorkFlow(WorkFlow):
-    # This method will partition the csv file into smaller independent chunks
+    # This method will partition the csv file into smaller independent chunks saving them on disk accordingly
     def csv_partition(self):
         pass
 
@@ -43,7 +43,7 @@ class OfferWorkFlow(WorkFlow):
         self.task_manager.add_task(RequestTask("RESP Predict", self.config.resp_url, dependencies=["Transform"]))
         self.task_manager.add_task(Task("ATS-RESP Combiner", partial(combiner_task, output_format=Prediction), dependencies=["ATS Predict", "RESP Predict"]))
         self.task_manager.add_task(RequestTask("Offer Recommendation", self.config.offer_url, dependencies=["ATS-RESP Combiner"]))
-        self.task_manager.add_task(Task("Load", partial(load_task, output_file=self.config.result_output_path), dependencies=["Transform", "ATS-RESP Combiner","Offer Recommendation"]))
+        self.task_manager.add_task(Task("Load", partial(load_task, output_file=self.config.result_output_path), dependencies=["Transform", "ATS Predict", "RESP Predict","Offer Recommendation"]))
     
     def start(self):
         self.task_manager.execute()

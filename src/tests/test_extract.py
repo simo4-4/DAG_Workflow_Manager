@@ -1,6 +1,6 @@
 import pytest
 import polars as pl
-from src.offer_functions import extract_task
+from src.offer_workflow_functions import extract_task
 
 @pytest.fixture
 def sample_csv(tmp_path):
