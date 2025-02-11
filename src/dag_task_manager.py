@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 class DAGTaskManager:
     def __init__(self):
         self.tasks = {}
-        self.dag = nx.DiGraph()  # DAG using NetworkX
-        self.results = {}  # Store task results
+        self.dag = nx.DiGraph() 
+        self.results = {} 
         self.execution_time = None
 
     def add_task(self, task: Task) -> None:
@@ -26,7 +26,7 @@ class DAGTaskManager:
             for dep in task.dependencies:
                 if dep not in self.tasks:
                     raise ValueError(f"Dependency {dep} not found for task {task.name}.")
-                self.dag.add_edge(dep, task.name)  # Ensure dependency order
+                self.dag.add_edge(dep, task.name)
 
     def execute(self):
         start_time = time.time()
@@ -34,11 +34,11 @@ class DAGTaskManager:
         if not nx.is_directed_acyclic_graph(self.dag):
             raise ValueError("The task dependencies form a cycle!")
 
-        sorted_tasks = list(nx.topological_sort(self.dag))  # Get execution order
+        sorted_tasks = list(nx.topological_sort(self.dag)) 
         completed_tasks = set()
 
         with ThreadPoolExecutor() as executor:
-            futures = {}  # Map task name to Future object
+            futures = {}
 
             while sorted_tasks:
                 ready_tasks = [
@@ -50,14 +50,14 @@ class DAGTaskManager:
 
                 for task_name in ready_tasks:
                     task = self.tasks[task_name]
-                    dependency_results = [self.results[dep] for dep in task.dependencies]  # Get dependency outputs
+                    dependency_results = [self.results[dep] for dep in task.dependencies]
                     futures[task_name] = executor.submit(task.execute, dependency_results)
                     sorted_tasks.remove(task_name)
 
                 for future in as_completed(futures.values()):
                     for task_name, f in futures.items():
                         if f == future:
-                            self.results[task_name] = future.result()  # Store result
+                            self.results[task_name] = future.result()
                             completed_tasks.add(task_name)
                             break
         self.execution_time = time.time() - start_time
