@@ -11,11 +11,15 @@ class CSVConfig(Config):
     csv_path: str
 
 @dataclass
-class OutputConfig(Config):
-    output_path: str
+class ResultConfig(Config):
+    result_output_path: str
 
 @dataclass
-class OfferWorkFlowConfig(CSVConfig, OutputConfig):
+class PerformanceConfig(Config):
+    performance_output_path: str
+
+@dataclass
+class OfferWorkFlowConfig(CSVConfig, ResultConfig, PerformanceConfig):
     ats_url: str
     resp_url: str     
     offer_url: str     
@@ -34,5 +38,6 @@ class OfferWorkFlowConfig(CSVConfig, OutputConfig):
             ats_url=data.get("ats_url"),
             resp_url=data.get("resp_url"),
             offer_url=data.get("offer_url"),
-            output_path=data.get("output_path")
+            result_output_path=data.get("result_output_path"),
+            performance_output_path=data.get("performance_output_path")
         )

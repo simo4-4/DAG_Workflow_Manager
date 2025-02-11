@@ -5,5 +5,6 @@
     "ats_url": "http://localhost:8000/ml/ats/predict",
     "resp_url": "http://localhost:8000/ml/resp/predict",
     "offer_url": "http://localhost:8000/offer/assign",
-    "output_path": "workflow_results.csv"
+    "result_output_path": "plusgrade_workflow_result.csv",
+    "performance_output_path": "plusgrade_performance_summary.json"
 }

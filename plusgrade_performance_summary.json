@@ -1,0 +1,49 @@
+{
+    "name": "plusgrade",
+    "description": "Reads from a CSV and combines the results of a couple APIs",
+    "tasks": {
+        "Extract": {
+            "status": "Success",
+            "execution_time (sec)": 0.018316030502319336,
+            "processed_items": 4335,
+            "throughput (item/sec)": 236677.9198937818
+        },
+        "Transform": {
+            "status": "Success",
+            "execution_time (sec)": 0.04818272590637207,
+            "processed_items": 890,
+            "throughput (item/sec)": 18471.350120983905
+        },
+        "ATS Predict": {
+            "status": "Success",
+            "execution_time (sec)": 0.5431287288665771,
+            "processed_items": 890,
+            "throughput (item/sec)": 1638.6538820314067
+        },
+        "RESP Predict": {
+            "status": "Success",
+            "execution_time (sec)": 0.5398788452148438,
+            "processed_items": 890,
+            "throughput (item/sec)": 1648.518010824866
+        },
+        "ATS-RESP Combiner": {
+            "status": "Success",
+            "execution_time (sec)": 0.0005819797515869141,
+            "processed_items": 890,
+            "throughput (item/sec)": 1529262.8267103645
+        },
+        "Offer Recommendation": {
+            "status": "Success",
+            "execution_time (sec)": 0.2826550006866455,
+            "processed_items": 890,
+            "throughput (item/sec)": 3148.714856761597
+        },
+        "Load": {
+            "status": "Success",
+            "execution_time (sec)": 0.0046579837799072266,
+            "processed_items": 890,
+            "throughput (item/sec)": 191069.79372472744
+        }
+    },
+    "total_execution_time (sec)": 0.8981959819793701
+}

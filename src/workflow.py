@@ -43,19 +43,19 @@ class OfferWorkFlow(WorkFlow):
         self.task_manager.add_task(RequestTask("RESP Predict", self.config.resp_url, dependencies=["Transform"]))
         self.task_manager.add_task(Task("ATS-RESP Combiner", partial(combiner_task, output_format=Prediction), dependencies=["ATS Predict", "RESP Predict"]))
         self.task_manager.add_task(RequestTask("Offer Recommendation", self.config.offer_url, dependencies=["ATS-RESP Combiner"]))
-        self.task_manager.add_task(Task("Load", partial(load_task, output_file=self.config.output_path), dependencies=["Transform", "ATS-RESP Combiner","Offer Recommendation"]))
+        self.task_manager.add_task(Task("Load", partial(load_task, output_file=self.config.result_output_path), dependencies=["Transform", "ATS-RESP Combiner","Offer Recommendation"]))
     
     def start(self):
         self.task_manager.execute()
         logger.info(f"Workflow {self.config.name} completed successfully")
 
-    def save_summary(self, output_path):
+    def save_summary(self):
         workflow_information = {
             "name": self.config.name,
             "description": self.config.description,
         }
 
         workflow_information.update(self.task_manager.get_summary())
-        
-        with open(output_path, "w") as f:
+
+        with open(self.config.performance_output_path, "w") as f:
             json.dump(workflow_information, f, indent=4)
