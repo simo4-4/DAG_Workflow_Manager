@@ -15,7 +15,6 @@ async def ping():
 
 @app.post("/ml/ats/predict")
 async def predict_ats_ep(member_features: MemberFeatures):
-    await asyncio.sleep(0.08)
     return predict_ats(member_features)
 
 

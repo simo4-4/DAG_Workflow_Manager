@@ -3,25 +3,50 @@ Welcome to the ML Application Engineer take home assignment.
 
 Your task is to build a low-latency process that will process data, run the endpoints within the `app.py` file in a local application server, send it to ML Endpoints to get predictions, send those prediction results to offers endpoint to get which offers to give to which members, and finally record the results. 
 
-## Solution
-A DAG Task Manager
+## Solution: A DAG Task Manager
 
-Pros:
-- Fully Customizable
-- Independent tasks run in parallel threads
+### Usage:
+- To run the default configuration:  
+  `python -m src.run_workflow`
+  
+- To run with a custom configuration:  
+  `python -m src.run_workflow --config "your config path"`
+  
+- To define and run your custom workflow with corresponding tasks, create a new workflow class and execute it through the `run_workflow` file.
 
-Cons:
-- Dependent tasks will run one after the other and can't stream or use intermediate outputs
+### How It Works:
+1. **Task Definition & Dependencies**:  
+   Define your tasks and their dependencies using an easy-to-use interface.
+   
+2. **Task Execution**:  
+   Tasks are executed in the order defined, with independent tasks running in parallel.
 
-To Improve:
-- Streaming between dependent tasks rather than wait for a task to be fully done
-- Error handling is very limited and should be improved
-- Testing
+3. **Threaded Execution**:  
+   Each task runs in its own thread.
+
+4. **Task Types**:
+   - Tasks can be either **CPU-heavy** or **I/O-heavy**.
+   - For **Network I/O-heavy tasks**, Asyncio event loops are used for concurrency to avoid the overhead of additional threads.
+
+5. **Chunking Large Files** *(to be implemented)*:  
+   Large files can be chunked by columns and saved into different partitions. These partitions can be processed on different processes or servers. For example, we could chunk a CSV file by a hash of `memberId`, ensuring rows with the same `memberId` are grouped together. Alternatively, a solution using Spark can be considered.
+
+### Pros:
+- Fully **Customizable**.
+- Independent tasks run in **parallel threads**.
+
+### Cons:
+- **Dependent tasks** run sequentially and cannot stream or utilize intermediate outputs.
+
+### Areas for Improvement:
+- **Streaming between dependent tasks** rather than waiting for one task to complete before starting the next.
+- **Error handling** is currently limited and needs enhancement.
+- **Testing** requires further development.
 
 
 
 ## Setup
-You can install the necessary packages by running the `pip install -rrequirements.txt` command.
+You can install the necessary packages by running the `pip install -r requirements.txt` command.
 
 A part of this assignment requires you to run a local application to interact with the endpoints defined in `app.py` You can use any tool of your choosing to accomplish this, however it is worth noting that this project comes with [uvicorn](https://www.uvicorn.org/) by default, which can be used to run the said server.
 

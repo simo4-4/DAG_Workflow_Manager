@@ -11,7 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description="Workflow Manager")
     
     # Change arg1 to an optional argument
-    parser.add_argument("--config", help="Workflow JSON Config Path", type=str, default="task_workflow_config.json")
+    parser.add_argument("--config", help="Workflow JSON Config Path", type=str, default="default_workflow_config.json")
     
     # Parse the arguments
     args = parser.parse_args()

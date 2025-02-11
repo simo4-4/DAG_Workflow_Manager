@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from functools import partial
+import json
 import logging
 from src.dag_task_manager import DAGTaskManager
 from src.job_config import OfferWorkFlowConfig
@@ -49,4 +50,12 @@ class OfferWorkFlow(WorkFlow):
         logger.info(f"Workflow {self.config.name} completed successfully")
 
     def save_summary(self, output_path):
-        self.task_manager.save_summary(output_path)
+        workflow_information = {
+            "name": self.config.name,
+            "description": self.config.description,
+        }
+
+        workflow_information.update(self.task_manager.get_summary())
+        
+        with open(output_path, "w") as f:
+            json.dump(workflow_information, f, indent=4)
