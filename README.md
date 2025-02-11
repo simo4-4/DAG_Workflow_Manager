@@ -3,14 +3,15 @@ Welcome to the ML Application Engineer take home assignment.
 
 Your task is to build a low-latency process that will process data, run the endpoints within the `app.py` file in a local application server, send it to ML Endpoints to get predictions, send those prediction results to offers endpoint to get which offers to give to which members, and finally record the results. 
 
-# Solution
+## Solution
 A DAG Task Manager
 
 Pros:
 - Fully Customizable
+- Independent tasks run in parallel
 
 To Improve:
-- Streaming between tasks rather than wait for a task to be fully done
+- Streaming between dependent tasks rather than wait for a task to be fully done
 - Error Handling is limited
 - Testing
 
