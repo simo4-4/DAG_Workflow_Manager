@@ -50,7 +50,7 @@ I got inspired from the way Apache Airflow works! Would love to further improve 
 - ***Better logging** can be further added
 
 ### Note
-In my OfferWorkFlow workflow, I intentionnally seperated the ATS, RESP, and OFFER tasks to demonstrate the DAG. The workflow would run faster if I combined them into one task
+In my OfferWorkFlow workflow, I intentionnally seperated the ATS, RESP, and OFFER tasks to demonstrate the DAG and its dependency management. The workflow would run faster if I combined them into one task leverage the concurrency of the events loop.
 
 
 ## Setup
