@@ -35,7 +35,7 @@ def transform_task(extracted_data):
                 .alias("PCT_BUY_TRANSACTIONS")
     ])
 
-    member_time_sorted_df = date_time_converted_df.sort(by=["memberId", "LAST_TRANSACTION_TS"], descending=[False, True])
+    member_time_sorted_df = date_time_converted_df.sort(by=["memberId", "LAST_TRANSACTION_TS"], descending=[False, False])
 
     current_day = datetime.utcnow()
     member_aggregated_df_last_3 = member_time_sorted_df.group_by("memberId").agg([
