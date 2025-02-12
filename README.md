@@ -6,7 +6,7 @@ Your task is to build a low-latency process that will process data, run the endp
 ## Solution: A DAG Task Manager
 
 ### Inspiration:
-I got inspired from the way Apache Airflow works! Would love to further improve this implementation to possibly allow each task to run on a distributed server where a streaming queue such as kafka runs between the dependencies
+I got inspired from the way Apache Airflow works! Initially, I thought of developing an ETL specific task manager, but it ended up being too limiting and unflexible and therefore decided to abtract each ETL stage into a task. Would love to further improve this implementation to possibly allow each task to run on a distributed server where a streaming queue such as Apache Kafka runs between the dependencies
 
 ### Usage:
 - To run the default configuration:  
@@ -23,14 +23,15 @@ I got inspired from the way Apache Airflow works! Would love to further improve 
    Define your tasks and their dependencies using an easy-to-use interface.
    
 2. **Task Execution**:  
-   Tasks are executed in the order defined, with independent tasks running in parallel.
+   Tasks are executed in the order defined within a workflow, with independent tasks running in parallel.
 
 3. **Threaded Execution**:  
    Each task runs in its own thread.
 
 4. **Task Types**:
-   - Tasks can be either **CPU-heavy** or **I/O-heavy**.
-   - For **Network I/O-heavy tasks**, Asyncio event loops are used for concurrency to avoid the overhead of additional threads.
+   - A task is a basic unit of execution that have dependencies between them express the order in which they should run in
+   - You can extend the Task class and create your own custom Task, which can be reusuable or not, as you see fit ! For example, you cound have a task in charge of ingesting data from a database or from a RabbitMQ queue which would then pass the results to the next component.
+   - For **Network I/O-heavy tasks**, use the **AsyncTask** type where Asyncio event loops are used for concurrency to avoid the overhead of additional threads.
 
 5. **Chunking Large Files** *(to be implemented)*:  
    Large files can be chunked by columns and saved into different partitions. These partitions can be processed on different processes or servers. For example, we could chunk a CSV file by a hash of `memberId`, ensuring rows with the same `memberId` are grouped together. Alternatively, a solution using Spark can be considered.
@@ -47,10 +48,11 @@ I got inspired from the way Apache Airflow works! Would love to further improve 
 - **Error handling** is currently limited and needs enhancement
 - **Testing** requires further development
 - **More Metrics** can be further added
-- ***Better logging** can be further added
+- **Better logging** can be further added
+- **Input and output validation between each task** could be enforced using a pydantic schema
 
 ### Note
-In my OfferWorkFlow workflow, I intentionnally seperated the ATS, RESP, and OFFER tasks to demonstrate the DAG and its dependency management. The workflow would run faster if I combined them into one task leverage the concurrency of the events loop.
+In my OfferWorkFlow workflow, I intentionnally seperated the ATS, RESP, and OFFER tasks to demonstrate the DAG and its dependency management. The workflow would run faster if I combined them into one AsyncTask leveraging the concurrency of the events loop.
 
 
 ## Setup

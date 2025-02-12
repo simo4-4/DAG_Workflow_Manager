@@ -1,4 +1,5 @@
 import asyncio
+import random
 from time import sleep
 from fastapi import FastAPI
 from .prediction_ep import predict_ats, predict_resp, Prediction

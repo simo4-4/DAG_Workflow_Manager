@@ -15,7 +15,7 @@ class DAGTaskManager:
         self.execution_time = None
 
     def add_task(self, task: Task) -> None:
-        """Adds a new task to the DAG."""
+        """Adds a new task to the DAG"""
         if task.name in self.tasks:
             raise ValueError(f"Task {task.name} already exists.")
         
@@ -30,7 +30,7 @@ class DAGTaskManager:
 
     def execute(self):
         start_time = time.time()
-        """Executes the DAG tasks following dependency order."""
+        """Executes the DAG tasks following dependency order"""
         if not nx.is_directed_acyclic_graph(self.dag):
             raise ValueError("The task dependencies form a cycle!")
 
@@ -63,24 +63,26 @@ class DAGTaskManager:
         self.execution_time = time.time() - start_time
 
     def get_summary(self):
-        """Returns execution results and performance summary as a dictionary."""
+        """Returns execution results and performance summary as a dictionary"""
         summary = {
             "tasks": {},
-            "total_execution_time (sec)": self.execution_time
+            "total_execution_time (sec)": self.execution_time,
+            "UTC_time_of_completion": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
         }
 
         for task_name, task in self.tasks.items():
             summary["tasks"][task_name] = {
-                "status": "Success" if task.result is not None else "Failed",
+                "status": "Success" if task.failure_count == 0 and task.result_count != 0 else "Failed",
                 "execution_time (sec)": task.execution_time,
-                "processed_items": task.result_count,
+                "processed_item_count": task.result_count,
+                "item_failure_count": task.failure_count,
                 "throughput (item/sec)": task.result_count / task.execution_time if task.execution_time else 0
             }
 
         return summary
 
     def save_summary(self, output_file):
-        """Saves execution results and performance summary to a JSON file."""
+        """Saves execution results and performance summary to a JSON file"""
         summary = self.get_summary()
         with open(output_file, "w") as f:
             json.dump(summary, f, indent=4)

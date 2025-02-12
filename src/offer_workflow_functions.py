@@ -7,10 +7,9 @@ import asyncio
 
 logger = logging.getLogger()
 
-
 def extract_task(file_path):
     df = pl.read_csv(file_path)
-    return df, len(df)
+    return df, len(df), 0
 
 def transform_task(extracted_data):
     dropped_nulls_df = extracted_data.drop_nulls()
@@ -52,15 +51,15 @@ def transform_task(extracted_data):
 
     transformed_df = joined_member_df
 
-    return transformed_df, len(transformed_df)
+    return transformed_df, len(transformed_df), 0
     
 def combiner_task(*results, output_format: type[BaseModel]):
     zipped_results = zip(*results)
     validated_results = [dict(zip(output_format.model_fields.keys(), values)) for values in zipped_results]
-    return validated_results, len(validated_results)
+    return validated_results, len(validated_results), 0
 
 def load_task(transform_result: pl.DataFrame, ats_result: List, resp_result:List, offer_result: List, output_file="output.csv"):
     logger.info(f"Writing transformed data to {output_file}")
     transform_result = transform_result.with_columns(pl.Series("ATS", ats_result), pl.Series("RESP", resp_result), pl.Series("OFFER", offer_result))
     transform_result.write_csv(output_file)
-    return "load", len(transform_result)
+    return "load", len(transform_result), 0
