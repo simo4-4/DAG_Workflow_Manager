@@ -1,10 +1,15 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import json
 
 @dataclass
-class Config:
+class Config(ABC):
     name: str
     description: str
+
+    @abstractmethod
+    def from_json_file(cls, file_path: str):
+        raise NotImplementedError("from_json_file() must be implemented")
 
 @dataclass
 class CSVConfig(Config):

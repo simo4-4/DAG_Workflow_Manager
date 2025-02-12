@@ -80,9 +80,3 @@ class DAGTaskManager:
             }
 
         return summary
-
-    def save_summary(self, output_file):
-        """Saves execution results and performance summary to a JSON file"""
-        summary = self.get_summary()
-        with open(output_file, "w") as f:
-            json.dump(summary, f, indent=4)

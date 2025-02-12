@@ -3,7 +3,7 @@ import polars as pl
 import pytest
 
 def test_transform_task():
-    """Test if transform_task correctly transforms the data."""
+    """Test if transform_task correctly transforms the data"""
     input_df = pl.DataFrame({
         'memberId': [1, 1, 1, 2, 2],
         'lastTransactionUtcTs': [
@@ -18,7 +18,7 @@ def test_transform_task():
         'lastTransactionType': ['buy', 'gift', 'redeem', 'buy', 'gift']
     })
     
-    transformed_df, count = transform_task(input_df)
+    transformed_df, count, failure_count = transform_task(input_df)
     
     assert len(transformed_df) == 2 
     assert 'AVG_POINTS_BOUGHT' in transformed_df.columns
@@ -31,7 +31,7 @@ def test_transform_task():
     assert member_1.select('PCT_BUY_TRANSACTIONS').item() == pytest.approx(1/3)
 
 def test_transform_task_handles_nulls():
-    """Test if transform_task correctly handles null values."""
+    """Test if transform_task correctly handles null values"""
     input_df = pl.DataFrame({
         'memberId': [1, 1, None, 2, 2],
         'lastTransactionUtcTs': [
@@ -46,12 +46,12 @@ def test_transform_task_handles_nulls():
         'lastTransactionType': ['buy', 'gift', None, 'buy', 'gift']
     })
     
-    transformed_df, count = transform_task(input_df)
+    transformed_df, count, failure_count = transform_task(input_df)
     
     assert len(transformed_df) == 1
 
 def test_transform_task_last_3_transactions():
-    """Test if transform_task correctly calculates last 3 transactions metrics."""
+    """Test if transform_task correctly calculates last 3 transactions metrics"""
     input_df = pl.DataFrame({
         'memberId': [1, 1, 1, 1, 1],
         'lastTransactionUtcTs': [
@@ -66,7 +66,7 @@ def test_transform_task_last_3_transactions():
         'lastTransactionType': ['buy', 'gift', 'redeem', 'buy', 'gift']
     })
     
-    transformed_df, count = transform_task(input_df)
+    transformed_df, count, failure_count = transform_task(input_df)
     
     last_3_points = transformed_df.select('LAST_3_TRANSACTIONS_AVG_POINTS_BOUGHT').item()
     assert last_3_points == pytest.approx(400.0)  # (300 + 400 + 500) / 3

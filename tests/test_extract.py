@@ -25,7 +25,7 @@ def sample_csv(tmp_path):
 
 def test_extract_task(sample_csv):
     """Test if extract_task correctly loads CSV data."""
-    df, count = extract_task(sample_csv)
+    df, count, failure_count = extract_task(sample_csv)
     
     assert isinstance(df, pl.DataFrame)
     assert count == 5

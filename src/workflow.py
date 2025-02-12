@@ -47,11 +47,7 @@ class PreloadedWorkFlow(BasicWorkFlow, IPreloadedWorkFlow):
     def __init__(self, config: Config):
         super().__init__(config)
         self.preloaded = False
-    
-    @abstractmethod
-    def preload(self):
-        pass
-        
+            
     def start(self):
         if not self.preloaded:
             self.preload()
