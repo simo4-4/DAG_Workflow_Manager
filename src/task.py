@@ -23,7 +23,6 @@ class Task(ABC):
 
 class SyncTask(Task):
     def execute(self, dependency_results):
-        """Executes the task, passing dependenccy results as arguments"""
         start_time = time.time()
         try:
             logger.info(f"Executing task: {self.name}")
@@ -37,11 +36,7 @@ class SyncTask(Task):
         return self.result
     
 class AsyncTask(Task):
-    def __init__(self, name, func, dependencies=None):
-        super().__init__(name, func, dependencies)
-
     def execute(self, dependency_results):
-        """Executes the task, passing dependency results as arguments"""
         start_time = time.time()
         try:
             logger.info(f"Executing task: {self.name}")
@@ -55,17 +50,17 @@ class AsyncTask(Task):
         return self.result
     
 class RequestTask(AsyncTask):
-    """Task class to post API requests on an event loop"""
-    def __init__(self, name, api_url, dependencies=None):
+    def __init__(self, name, api_url, num_concurrent_requests=10, dependencies=None):
         super().__init__(name, self.network_task, dependencies)
         self.api_url = api_url
+        self.num_concurrent_requests = num_concurrent_requests
         
     async def network_task(self,transformed_data):            
         async with aiohttp.ClientSession() as session:
             if isinstance(transformed_data, pl.DataFrame):
-                tasks = [self._post_data_with_semaphore(session, self.api_url, row, asyncio.Semaphore(value=10)) for row in transformed_data.iter_rows(named=True)]
+                tasks = [self._post_data_with_semaphore(session, self.api_url, row, asyncio.Semaphore(value=self.num_concurrent_requests)) for row in transformed_data.iter_rows(named=True)]
             else:
-                tasks = [self._post_data_with_semaphore(session,self.api_url, row, asyncio.Semaphore(value=10)) for row in transformed_data]
+                tasks = [self._post_data_with_semaphore(session,self.api_url, row, asyncio.Semaphore(value=self.num_concurrent_requests)) for row in transformed_data]
             results = await asyncio.gather(*tasks)
             return results, len(results), self.failure_count
     

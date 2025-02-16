@@ -1,4 +1,4 @@
-from src.job_config import OfferWorkFlowConfig
+from src.config import OfferWorkFlowConfig
 from src.workflow import OfferWorkFlow, IWorkFlow
 import logging
 

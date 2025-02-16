@@ -1,17 +1,17 @@
 from datetime import datetime, timezone
 import logging
-from typing import List
+from typing import List, Tuple
 import polars as pl
 from pydantic import BaseModel
 import asyncio
 
 logger = logging.getLogger()
 
-def extract_task(file_path):
+def extract_task(file_path: str) -> Tuple[pl.DataFrame, int, int]:
     df = pl.read_csv(file_path)
     return df, len(df), 0
 
-def transform_task(extracted_data):
+def transform_task(extracted_data: pl.DataFrame) -> Tuple[pl.DataFrame, int, int]:
     dropped_nulls_df = extracted_data.drop_nulls()
 
     date_time_converted_df = dropped_nulls_df.with_columns(
@@ -53,12 +53,12 @@ def transform_task(extracted_data):
 
     return transformed_df, len(transformed_df), 0
     
-def combiner_task(*results, output_format: type[BaseModel]):
+def combiner_task(*results, output_format: type[BaseModel]) -> Tuple[List, int, int]:
     zipped_results = zip(*results)
     validated_results = [dict(zip(output_format.model_fields.keys(), values)) for values in zipped_results]
     return validated_results, len(validated_results), 0
 
-def load_task(transform_result: pl.DataFrame, ats_result: List, resp_result:List, offer_result: List, output_file="output.csv"):
+def load_task(transform_result: pl.DataFrame, ats_result: List, resp_result:List, offer_result: List, output_file="output.csv") -> Tuple[str, int, int]:
     logger.info(f"Writing transformed data to {output_file}")
     transform_result = transform_result.with_columns(pl.Series("ATS", ats_result), pl.Series("RESP", resp_result), pl.Series("OFFER", offer_result))
     transform_result.write_csv(output_file)

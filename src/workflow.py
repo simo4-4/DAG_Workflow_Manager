@@ -1,11 +1,9 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from functools import partial
 import json
 import logging
-from typing import List
 from src.dag_task_manager import DAGTaskManager
-from src.job_config import Config, OfferWorkFlowConfig
+from src.config import Config, OfferWorkFlowConfig
 
 from src.offer_workflow_functions import combiner_task, extract_task, load_task, transform_task
 from src.prediction_ep import Prediction
@@ -15,7 +13,6 @@ logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-@dataclass
 class IWorkFlow(ABC):
     @abstractmethod
     def add_task(self, task: Task):
@@ -31,7 +28,6 @@ class IPreloadedWorkFlow(IWorkFlow):
         pass
     
 class BasicWorkFlow(IWorkFlow):
-    """A basic configurable workflow class, the user can add tasks and execute them"""
     def __init__(self, config:Config):
         self.config = config
         self.task_manager = DAGTaskManager()

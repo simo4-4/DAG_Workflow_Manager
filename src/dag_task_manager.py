@@ -1,7 +1,7 @@
-import json
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict
 from src.task import Task
 import networkx as nx
 
@@ -15,7 +15,6 @@ class DAGTaskManager:
         self.execution_time = None
 
     def add_task(self, task: Task) -> None:
-        """Adds a new task to the DAG"""
         if task.name in self.tasks:
             raise ValueError(f"Task {task.name} already exists.")
         
@@ -28,9 +27,9 @@ class DAGTaskManager:
                     raise ValueError(f"Dependency {dep} not found for task {task.name}.")
                 self.dag.add_edge(dep, task.name)
 
-    def execute(self):
+    def execute(self) -> None:
         start_time = time.time()
-        """Executes the DAG tasks following dependency order"""
+
         if not nx.is_directed_acyclic_graph(self.dag):
             raise ValueError("The task dependencies form a cycle!")
 
@@ -62,8 +61,7 @@ class DAGTaskManager:
                             break
         self.execution_time = time.time() - start_time
 
-    def get_summary(self):
-        """Returns execution results and performance summary as a dictionary"""
+    def get_summary(self) -> Dict:
         summary = {
             "tasks": {},
             "total_execution_time (sec)": self.execution_time,
