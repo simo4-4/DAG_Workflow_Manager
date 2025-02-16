@@ -31,11 +31,9 @@ class OfferWorkFlowConfig(CSVConfig, ResultConfig, PerformanceConfig):
 
     @classmethod
     def from_json_file(cls, file_path: str):
-        # Open and read the JSON file
         with open(file_path, 'r') as f:
-            data = json.load(f)  # Parse JSON content
+            data = json.load(f)
         
-        # Return a new OfferWorkFlowConfig instance
         return cls(
             name=data.get("name"),
             description=data.get("description"),
