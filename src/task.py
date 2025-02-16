@@ -50,17 +50,17 @@ class AsyncTask(Task):
         return self.result
     
 class RequestTask(AsyncTask):
-    def __init__(self, name, api_url, num_concurrent_requests=10, dependencies=None):
+    def __init__(self, name, api_url, max_concurrent_requests=100, dependencies=None):
         super().__init__(name, self.network_task, dependencies)
         self.api_url = api_url
-        self.num_concurrent_requests = num_concurrent_requests
+        self.max_concurrent_requests = max_concurrent_requests
         
     async def network_task(self,transformed_data):            
         async with aiohttp.ClientSession() as session:
             if isinstance(transformed_data, pl.DataFrame):
-                tasks = [self._post_data_with_semaphore(session, self.api_url, row, asyncio.Semaphore(value=self.num_concurrent_requests)) for row in transformed_data.iter_rows(named=True)]
+                tasks = [self._post_data_with_semaphore(session, self.api_url, row, asyncio.Semaphore(value=self.max_concurrent_requests)) for row in transformed_data.iter_rows(named=True)]
             else:
-                tasks = [self._post_data_with_semaphore(session,self.api_url, row, asyncio.Semaphore(value=self.num_concurrent_requests)) for row in transformed_data]
+                tasks = [self._post_data_with_semaphore(session,self.api_url, row, asyncio.Semaphore(value=self.max_concurrent_requests)) for row in transformed_data]
             results = await asyncio.gather(*tasks)
             return results, len(results), self.failure_count
     

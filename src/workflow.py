@@ -25,14 +25,14 @@ class IWorkFlow(ABC):
 class IPreloadedWorkFlow(IWorkFlow):
     @abstractmethod 
     def preload(self):
-        pass
+        raise NotImplementedError("preload() must be implemented")
     
 class BasicWorkFlow(IWorkFlow):
     def __init__(self, config:Config):
         self.config = config
         self.task_manager = DAGTaskManager()
 
-    def add_task(self, task: Task):
+    def add_task(self, task: Task) -> None:
         self.task_manager.add_task(task)
         
     def start(self):
@@ -44,7 +44,7 @@ class PreloadedWorkFlow(BasicWorkFlow, IPreloadedWorkFlow):
         super().__init__(config)
         self.preloaded = False
             
-    def start(self):
+    def start(self) -> None:
         if not self.preloaded:
             self.preload()
             self.preloaded = True
@@ -64,7 +64,7 @@ class OfferWorkFlow(PreloadedWorkFlow):
         self.add_task(RequestTask("Offer Recommendation", self.config.offer_url, dependencies=["ATS-RESP Combiner"]))
         self.add_task(SyncTask("Load", partial(load_task, output_file=self.config.result_output_path), dependencies=["Transform", "ATS Predict", "RESP Predict","Offer Recommendation"]))
     
-    def save_summary(self):
+    def save_summary(self) -> None:
         workflow_information = {
             "name": self.config.name,
             "description": self.config.description,
@@ -77,6 +77,6 @@ class OfferWorkFlow(PreloadedWorkFlow):
         
         logger.info(f"Workflow {self.config.name} saved a summary successfully")
 
-    def start(self):
+    def start(self) -> None:
         super().start()
         self.save_summary()
