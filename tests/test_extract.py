@@ -1,6 +1,6 @@
 import pytest
 import polars as pl
-from src.offer_workflow_functions import extract_task
+from src.user_functions.offer_workflow_functions import extract_task
 
 @pytest.fixture
 def sample_csv(tmp_path):
@@ -25,10 +25,10 @@ def sample_csv(tmp_path):
 
 def test_extract_task(sample_csv):
     """Test if extract_task correctly loads CSV data."""
-    df, count, failure_count = extract_task(sample_csv)
+    df, processed_count, failure_count = extract_task(sample_csv)
     
     assert isinstance(df, pl.DataFrame)
-    assert count == 5
+    assert processed_count == 5
     assert list(df.columns) == [
         'memberId', 
         'lastTransactionUtcTs', 

@@ -1,6 +1,6 @@
 import argparse
 import logging
-from src.workflow_factory import WorkFlowFactory
+from .workflow_management import WorkFlowFactory
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

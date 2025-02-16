@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from functools import partial
 import json
 import logging
-from src.dag_task_manager import DAGTaskManager
-from src.config import Config, OfferWorkFlowConfig
+from .dag_task_manager import DAGTaskManager
+from .config import Config, OfferWorkFlowConfig
+from .task import RequestTask, SyncTask, Task
 
-from src.offer_workflow_functions import combiner_task, extract_task, load_task, transform_task
-from src.prediction_ep import Prediction
-from src.task import RequestTask, SyncTask, Task
+from src.user_functions.offer_workflow_functions import combiner_task, extract_task, load_task, transform_task
+from src.api.prediction_ep import Prediction
 
 logging.basicConfig()
 logger = logging.getLogger()

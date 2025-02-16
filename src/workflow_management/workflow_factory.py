@@ -1,5 +1,5 @@
-from src.config import OfferWorkFlowConfig
-from src.workflow import OfferWorkFlow, IWorkFlow
+from .config import OfferWorkFlowConfig
+from .workflow import OfferWorkFlow, IWorkFlow
 import logging
 
 logger = logging.getLogger(__name__)

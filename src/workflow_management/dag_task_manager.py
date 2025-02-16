@@ -2,7 +2,7 @@ import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict
-from src.task import Task
+from .task import Task
 import networkx as nx
 
 logger = logging.getLogger(__name__)

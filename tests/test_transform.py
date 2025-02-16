@@ -1,4 +1,4 @@
-from src.offer_workflow_functions import transform_task
+from src.user_functions.offer_workflow_functions import transform_task
 import polars as pl
 import pytest
 
@@ -18,7 +18,7 @@ def test_transform_task():
         'lastTransactionType': ['buy', 'gift', 'redeem', 'buy', 'gift']
     })
     
-    transformed_df, count, failure_count = transform_task(input_df)
+    transformed_df, processed_count, failure_count = transform_task(input_df)
     
     assert len(transformed_df) == 2 
     assert 'AVG_POINTS_BOUGHT' in transformed_df.columns
@@ -46,7 +46,7 @@ def test_transform_task_handles_nulls():
         'lastTransactionType': ['buy', 'gift', None, 'buy', 'gift']
     })
     
-    transformed_df, count, failure_count = transform_task(input_df)
+    transformed_df, processed_count, failure_count = transform_task(input_df)
     
     assert len(transformed_df) == 1
 
@@ -66,7 +66,7 @@ def test_transform_task_last_3_transactions():
         'lastTransactionType': ['buy', 'gift', 'redeem', 'buy', 'gift']
     })
     
-    transformed_df, count, failure_count = transform_task(input_df)
+    transformed_df, processed_count, failure_count = transform_task(input_df)
     
     last_3_points = transformed_df.select('LAST_3_TRANSACTIONS_AVG_POINTS_BOUGHT').item()
     assert last_3_points == pytest.approx(400.0)  # (300 + 400 + 500) / 3
