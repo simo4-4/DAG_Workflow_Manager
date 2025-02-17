@@ -15,16 +15,16 @@ logger.setLevel(logging.INFO)
 
 class IWorkFlow(ABC):
     @abstractmethod
-    def add_task(self, task: Task):
+    def add_task(self, task: Task) -> None:
         raise NotImplementedError("add_task() must be implemented")   
 
     @abstractmethod
-    def start(self):
+    def start(self) -> None:
         raise NotImplementedError("start() must be implemented")
     
 class IPreloadedWorkFlow(IWorkFlow):
     @abstractmethod 
-    def preload(self):
+    def preload(self) -> None:
         raise NotImplementedError("preload() must be implemented")
     
 class BasicWorkFlow(IWorkFlow):
@@ -35,7 +35,7 @@ class BasicWorkFlow(IWorkFlow):
     def add_task(self, task: Task) -> None:
         self.task_manager.add_task(task)
         
-    def start(self):
+    def start(self) -> None:
         self.task_manager.execute()
         logger.info(f"Workflow {self.config.name} completed successfully")
 
@@ -55,7 +55,7 @@ class OfferWorkFlow(PreloadedWorkFlow):
     def __init__(self, config: OfferWorkFlowConfig):
         super().__init__(config)
 
-    def preload(self):
+    def preload(self) -> None:
         self.add_task(SyncTask("Extract", partial(extract_task, file_path=self.config.csv_path)))
         self.add_task(SyncTask("Transform", transform_task, dependencies=["Extract"]))
         self.add_task(RequestTask("ATS Predict", self.config.ats_url, dependencies=["Transform"]))

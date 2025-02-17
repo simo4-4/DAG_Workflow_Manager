@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import logging
 import time
 import asyncio
+from typing import List, Tuple
 import aiohttp
 import polars as pl
 
@@ -18,11 +19,11 @@ class Task(ABC):
         self.execution_time = None
 
     @abstractmethod
-    def execute(self, dependency_results):
+    def execute(self, dependency_results) -> List:
         raise NotImplementedError("execute() must be implemented")
 
 class SyncTask(Task):
-    def execute(self, dependency_results):
+    def execute(self, dependency_results) -> List:
         start_time = time.time()
         try:
             logger.info(f"Executing task: {self.name}")
@@ -36,7 +37,7 @@ class SyncTask(Task):
         return self.result
     
 class AsyncTask(Task):
-    def execute(self, dependency_results):
+    def execute(self, dependency_results) -> List:
         start_time = time.time()
         try:
             logger.info(f"Executing task: {self.name}")
@@ -55,7 +56,7 @@ class RequestTask(AsyncTask):
         self.api_url = api_url
         self.max_concurrent_requests = max_concurrent_requests
         
-    async def network_task(self,transformed_data):            
+    async def network_task(self,transformed_data) -> Tuple[List, int, int]:            
         async with aiohttp.ClientSession() as session:
             if isinstance(transformed_data, pl.DataFrame):
                 tasks = [self._post_data_with_semaphore(session, self.api_url, row, asyncio.Semaphore(value=self.max_concurrent_requests)) for row in transformed_data.iter_rows(named=True)]
@@ -75,6 +76,6 @@ class RequestTask(AsyncTask):
             logger.error(f"Error for data {data} for api {api_url}: {e}")
             return None
 
-    async def _post_data_with_semaphore(self, session: aiohttp.ClientSession, api_url: str, data: dict, semaphore: asyncio.Semaphore) -> dict:
+    async def _post_data_with_semaphore(self, session: aiohttp.ClientSession, api_url: str, data: dict, semaphore: asyncio.Semaphore):
         async with semaphore:
             return await self._post_data(session, api_url, data)
