@@ -5,7 +5,7 @@ from src.user_functions.offer_workflow_functions import extract_task
 @pytest.fixture
 def sample_csv(tmp_path):
     """Create a sample CSV file for testing."""
-    df = pl.DataFrame({
+    mock_df = pl.DataFrame({
         'memberId': [1, 1, 1, 2, 2],
         'lastTransactionUtcTs': [
             '2024-01-01 10:00:00',
@@ -20,16 +20,16 @@ def sample_csv(tmp_path):
     })
     
     csv_path = tmp_path / "test_data.csv"
-    df.write_csv(csv_path)
+    mock_df.write_csv(csv_path)
     return str(csv_path)
 
 def test_extract_task(sample_csv):
     """Test if extract_task correctly loads CSV data."""
-    df, processed_count, failure_count = extract_task(sample_csv)
+    mock_df, processed_count, failure_count = extract_task(sample_csv)
     
-    assert isinstance(df, pl.DataFrame)
+    assert isinstance(mock_df, pl.DataFrame)
     assert processed_count == 5
-    assert list(df.columns) == [
+    assert list(mock_df.columns) == [
         'memberId', 
         'lastTransactionUtcTs', 
         'lastTransactionPointsBought',

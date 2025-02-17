@@ -10,6 +10,25 @@ Your task is to build a low-latency process that will process data, run the endp
 ### Inspiration:
 I got inspired from the way Apache Airflow works! Initially, I thought of developing an ETL specific task manager, but it ended up being too limiting and unflexible and therefore decided to abtract each ETL stage into a task. Would love to further improve this implementation to possibly allow each task to run on a distributed server where a streaming queue such as Apache Kafka runs between the dependencies
 
+### Project Structure:
+
+    ├── src/
+    │   ├── workflow_management/
+    │   ├── api/
+    │   ├── user_functions/
+    │   └── run_workflow.py         # Main entry point script
+
+#### Workflow Management Structure
+
+    ├── workflow_management/
+    │   ├── __init__.py
+    │   ├── workflow.py         # Workflow class implementations
+    │   ├── workflow_factory.py # Factory for creating workflows
+    │   ├── dag_task_manager.py # Core DAG execution engine
+    │   ├── config.py           # Configuration classes
+    │   └── task.py             # Task base classes and implementations
+
+
 ### Usage:
 - To run the default configuration:  
   `python -m src.run_workflow` which will run a OfferWorkFlow instance by default
