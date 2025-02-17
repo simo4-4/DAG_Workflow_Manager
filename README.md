@@ -8,7 +8,7 @@ Your task is to build a low-latency process that will process data, run the endp
 ![Alt text](dag_task_manager.drawio.png?raw=true "DAG Workflow Manager")
 
 ### Inspiration:
-I got inspired from the way Apache Airflow works! Initially, I thought of developing an ETL specific task manager, but it ended up being too limiting and unflexible and therefore decided to abtract each ETL stage into a task. Would love to further improve this implementation to possibly allow each task to run on a distributed server where a streaming queue such as Apache Kafka runs between the dependencies
+I got inspired from the way Apache Airflow works! Initially, I thought of developing an ETL specific task manager, but it ended up being too limiting and unflexible and therefore decided to abtract each ETL stage into a task. Would love to further improve this implementation to possibly allow each task to run on a distributed server where a streaming queue such as Apache Kafka runs between the dependent tasks
 
 ### Project Structure:
 
@@ -28,69 +28,168 @@ I got inspired from the way Apache Airflow works! Initially, I thought of develo
     │   ├── config.py           # Configuration classes
     │   └── task.py             # Task base classes and implementations
 
+### Installation:
 
-### Usage:
-- To run the default configuration:  
-  `python -m src.run_workflow` which will run a OfferWorkFlow instance by default
-  
-- To run with a custom configuration from the command line:  
-  `python -m src.run_workflow --config "your config path"`
-  
-- To define and run your custom workflow from the command line
-- -  Create a new workflow class extending the PreloadedWorkflow class, add it to the factory pattern, run it through the `run_workflow` file using the `--workflow` argument.
-- - (E.g, `python -m src.run_workflow --workflow CustomWorkFlow --config "your config path"`)
-- - See the `OfferWorkFlow` class inside the `workflow.py` file for a concrete example
-- You can also run a custom workflow by instantiating an instance of the `BasicWorkFlow` and add `Tasks` to it and run it from a python interpretor
+1. Install the dependencies (preferably on a virtual environment)
+    ```
+    cd ml-application-dag-task-manager
+    pip install -r requirements.txt
+    ```
 
-### How It Works:
-1. **Task Definition & Dependencies**:  
-   Define your tasks and their dependencies using an easy-to-use interface. Each function used to instantie a task needs to output a `result` which will be used as input for the next dependent task, a `item_count` representing the number of items_processed, and a `failure_count `representing the number of items that fails to be processed. See `offer_workflow_function.py` for an example.
+### Running the System
+1. Run the Local Server:
+    ```
+    uvicorn src.api.app:app --host localhost --port 8000
+    ```
+2. Run the assignment's default assigned workflow `OfferWorkFlow`
+    ```
+    python -m src.run_workflow
+    ```
 
-2. **Add them to a workflow**:
-    Use the add_task() method on an instantied BasicWorkFlow to add your tasks
+The results will be available in 2 separate files `plusgrade_performance_summary.json` and `plusgrade_workflow_result.csv` for easy readability
 
-2. **Run your WorkFlow**:
-    Call the start() method on your workflow to run it!
-   
-2. **Task Execution**:  
-   Tasks are executed in the order defined within a workflow, with independent tasks running in parallel.
+### Running different configs and workflow variations
+1. Run a custom configuration for the `OfferWorkFlow`
+    ```
+    python -m src.run_workflow --config "your config path"
+    ```
+2. Run a custom workflow
+    ```
+    python -m src.run_workflow --workflow CustomWorkFlow --config "your config path"
+    ```
 
-3. **Threaded Execution**:  
-   Each task runs in its own thread.
+### Creating Custom Workflows
 
-- **Task Information**:
-   - A task is a basic unit of execution that has dependencies with other tasks
-   - You can extend the Task class and create your own custom Task, which can be reusuable or not, as you see fit ! For example, you cound have a task in charge of ingesting data from a database or from a RabbitMQ queue which would then pass the results to the next component.
-   - For **Network I/O-heavy tasks**, use the **AsyncTask** type where Asyncio event loops are used for concurrency to avoid the overhead of additional threads.
+There are two ways to create custom workflows:
 
-### Pros:
-- Clean interface
-- Fully **Customizable**.
-- Independent tasks run in **parallel threads**.
+#### 1. Using the Factory Pattern
+```python
+# 1. Create your workflow class
+class CustomWorkflow(PreloadedWorkflow):
+    def preload(self) -> None:
+        self.add_task(SyncTask("CustomTask1", task1_function))
+        self.add_task(SyncTask("CustomTask2", task2_function, dependencies=["CustomTask1"]))
 
-### Cons:
-- **Dependent tasks** run sequentially and cannot stream or utilize intermediate outputs.
+# 2. Add it to the WorkflowFactory inside the create_workflow()
+elif workflow_type == "CustomWorkflow":
+    config = CustomConfig.from_json_file(config_path)
+    logger.info(f"Loaded config: {config}")
+    return CustomConfig(config)
 
-### Areas for Improvement:
-- **Streaming between dependent tasks** rather than waiting for one task to complete before starting the next
-- **Error handling** is currently limited and needs enhancement
-- **Testing** only cover the the extract and trasform tasks, we still need to cover the other tasks, the DAG task manager, the workflows, ect...
-- **More Metrics** can be further added
-- **Better logging** can be further added
-- **Input and output validation between each task** could be enforced using a pydantic schema
-- **Allow for distributed workflows** for files and inputs that can partitioned and ran on different servers separately
-- - For example, we could chunk a CSV file by a hash of `memberId`, ensuring rows with the same `memberId` are grouped together and run the partitions on different processes or machines. Alternatively, a solution using Spark can be considered if streaming is implemented between the tasks.
+# 3. Run from command line
+python -m src.run_workflow --workflow CustomWorkflow --config "config.json"
+```
 
-### Note
-In my OfferWorkFlow workflow, I intentionnally seperated the ATS, RESP, and OFFER tasks to demonstrate the DAG and its dependency management. The workflow would run faster if I combined them into one AsyncTask leveraging the concurrency of the events loop.
+#### 2. Direct Instantiation
+```python
+# Create workflow instance
+config = Config.from_json_file("config.json")
+workflow = BasicWorkFlow(config)
+
+# Add tasks
+workflow.add_task(SyncTask("Extract", extract_function))
+workflow.add_task(RequestTask("API Call", api_function, dependencies=["Extract"]))
+
+# Execute
+workflow.start()
+```
+
+Choose the factory pattern approach when:
+- The workflow will be reused
+- You want commandline execution support
+- You need configuration management
+
+Use direct instantiation for:
+- Quick prototyping
+- One time workflows
+- Interactive development
 
 
-## Setup
-You can install the necessary packages by running the `pip install -r requirements.txt` command.
+### How It Works
 
-A part of this assignment requires you to run a local application to interact with the endpoints defined in `app.py` You can use any tool of your choosing to accomplish this, however it is worth noting that this project comes with [uvicorn](https://www.uvicorn.org/) by default, which can be used to run the said server.
+#### 1. Task Definition & Dependencies
+Tasks are the fundamental building blocks of a workflow. 
 
-## The Task
+- Each task function that relies on the results of a previous task must have as input:
+- -  `previous_result`: The output of the previous task on which it depends
+
+- Task functions that don't rely on other tasks don't need an input
+
+
+- And must return:
+- - `result`: Output data passed to dependent tasks
+- - `item_count`: Number of processed items
+- - `failure_count`: Number of failed items
+
+See `offer_workflow_functions.py` and `workflow.py` for implementation examples.
+
+#### 2. Workflow Creation
+```python
+# Create a workflow instance
+workflow = BasicWorkFlow(config)
+
+# Add tasks with dependencies
+workflow.add_task(SyncTask("Extract", extract_task))
+workflow.add_task(SyncTask("Transform", transform_task, dependencies=["Extract"]))
+workflow.add_task(SyncTask("Load", custom_task_function, dependencies=["Transform"]))
+```
+
+#### 3. Workflow Execution
+```python
+# Start the workflow
+workflow.start()
+```
+
+#### 4. Execution Model
+- **Parallel Execution**: Independent tasks run concurrently in separate threads
+- **Dependencies**: Tasks execute only after all dependencies complete
+- **Task Types**:
+  - `SyncTask`: For CPU-bound operations
+  - `AsyncTask`: For I/O-bound operations (uses asyncio)
+  - `RequestTask`: For HTTP API calls
+
+#### Custom Task Types
+You can extend the base `Task` class to create specialized tasks:
+- Database ingestion tasks
+- Message queue consumers
+- Custom processing tasks
+
+> **Performance Tip**: For network-heavy functions, use `AsyncTask` instead of `SyncTask` to leverage asyncio's event loop and avoid thread overhead.
+
+### Advantages
+- **Clean Interface**: Intuitive API for workflow creation and management
+- **Flexible Architecture**: Easily extensible for custom workflows and tasks
+- **Concurrent Execution**: Independent tasks run in parallel using thread pools
+
+### Limitations
+- **Sequential Dependencies**: Tasks with dependencies must run sequentially, limiting streaming capabilities
+- **Memory Usage**: Complete task results must be held in memory until dependent tasks finish
+
+### Future Improvements
+
+#### Core Features
+- **Streaming Processing**: Implement data streaming between dependent tasks
+- **Enhanced Error Handling**: Add retry mechanisms and failure recovery
+- **Comprehensive Testing**: Expand test coverage for all components
+- **Input/Output Validation**: Add Pydantic schemas for data validation between tasks
+
+#### Performance & Monitoring
+- **Advanced Metrics**: Add advanced performance tracking and task execution statistics
+- **Structured Logging**: Implement detailed logging with correlation IDs
+- **Resource Monitoring**: Track memory usage and thread pool utilization
+
+#### Scalability
+- **Distributed Execution**: Support for multi-node task distribution
+- **Data Partitioning**: Implement smart data chunking (e.g., by `memberId` hash) for large files
+- **Integration Options**: 
+  - Apache Kafka for streaming between tasks
+  - Apache Spark for large-scale data processing
+
+> [!NOTE]
+> The current `OfferWorkFlow` separates ATS, RESP, and OFFER tasks to showcase DAG capabilities. 
+> For optimal performance, these could be combined into a single `AsyncTask` using asyncio.
+
+## The Assigned Task/Workflow
 - Create a Python process which will:
 
     1. Read member data from the `member_data.csv` file. Not all data entries have all the columns in it, and some members will have multiple entries, which will be relevant for the next step. The csv file contains the following columns:
