@@ -170,13 +170,12 @@ You can extend the base `Task` class to create specialized tasks:
 
 #### Core Features
 - **Streaming Processing**: Implement data streaming between dependent tasks
-- **Enhanced Error Handling**: Add retry mechanisms and failure recovery
+- **Enhanced Error Handling**: Add retry mechanisms
 - **Comprehensive Testing**: Expand test coverage for all components
 - **Input/Output Validation**: Add Pydantic schemas for data validation between tasks
 
 #### Performance & Monitoring
 - **Advanced Metrics**: Add advanced performance tracking and task execution statistics
-- **Structured Logging**: Implement detailed logging with correlation IDs
 - **Resource Monitoring**: Track memory usage and thread pool utilization
 
 #### Scalability
