@@ -4,11 +4,12 @@ Welcome to the ML Application Engineer take home assignment.
 Your task is to build a low-latency process that will process data, run the endpoints within the `app.py` file in a local application server, send it to ML Endpoints to get predictions, send those prediction results to offers endpoint to get which offers to give to which members, and finally record the results. 
 
 ## Solution: A DAG Workflow Manager by Simo Benkirane
-
+A plug-and-play workflow manager to schedule, run, and monitor workflows.
+Plug your custom functions to a workflow and let the system do the rest !
 ![Alt text](dag_task_manager.drawio.png?raw=true "DAG Workflow Manager")
 
 ### Inspiration:
-I got inspired from the way Apache Airflow works! Initially, I thought of developing an ETL specific task manager, but it ended up being too limiting and unflexible and therefore decided to abtract each ETL stage into a task. Would love to further improve this implementation to possibly allow each task to run on a distributed server where a streaming queue such as Apache Kafka runs between the dependent tasks
+I got inspired from the way Apache Airflow works! Initially, I thought of developing an ETL specific task manager, but it ended up being too limiting and unflexible and therefore decided to abtract each ETL stage into a task.
 
 ### Project Structure:
 

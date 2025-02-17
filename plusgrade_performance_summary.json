@@ -4,54 +4,54 @@
     "tasks": {
         "Extract": {
             "status": "Success",
-            "execution_time (sec)": 0.0015058517456054688,
+            "execution_time (sec)": 0.0015730857849121094,
             "processed_item_count": 4335,
             "item_failure_count": 0,
-            "throughput (item/sec)": 2878769.449018366
+            "throughput (item/sec)": 2755730.197029403
         },
         "Transform": {
             "status": "Success",
-            "execution_time (sec)": 0.004271984100341797,
+            "execution_time (sec)": 0.004047870635986328,
             "processed_item_count": 890,
             "item_failure_count": 0,
-            "throughput (item/sec)": 208334.1087174908
+            "throughput (item/sec)": 219868.68653551655
         },
         "ATS Predict": {
             "status": "Success",
-            "execution_time (sec)": 0.5137178897857666,
+            "execution_time (sec)": 0.505486011505127,
             "processed_item_count": 890,
             "item_failure_count": 0,
-            "throughput (item/sec)": 1732.468379427379
+            "throughput (item/sec)": 1760.6817592240593
         },
         "RESP Predict": {
             "status": "Success",
-            "execution_time (sec)": 0.5211870670318604,
+            "execution_time (sec)": 0.5025789737701416,
             "processed_item_count": 890,
             "item_failure_count": 0,
-            "throughput (item/sec)": 1707.6402242068566
+            "throughput (item/sec)": 1770.8659662452342
         },
         "ATS-RESP Combiner": {
             "status": "Success",
-            "execution_time (sec)": 0.0007138252258300781,
+            "execution_time (sec)": 0.0006039142608642578,
             "processed_item_count": 890,
             "item_failure_count": 0,
-            "throughput (item/sec)": 1246803.794255177
+            "throughput (item/sec)": 1473719.1314646665
         },
         "Offer Recommendation": {
             "status": "Success",
-            "execution_time (sec)": 0.26343202590942383,
+            "execution_time (sec)": 0.2554168701171875,
             "processed_item_count": 890,
             "item_failure_count": 0,
-            "throughput (item/sec)": 3378.480641932313
+            "throughput (item/sec)": 3484.499671426011
         },
         "Load": {
             "status": "Success",
-            "execution_time (sec)": 0.0015799999237060547,
+            "execution_time (sec)": 0.0019178390502929688,
             "processed_item_count": 890,
             "item_failure_count": 0,
-            "throughput (item/sec)": 563291.1664403199
+            "throughput (item/sec)": 464063.9681750373
         }
     },
-    "total_execution_time (sec)": 0.7935891151428223,
-    "UTC_time_of_completion": "2025-02-17 00:10:01"
+    "total_execution_time (sec)": 0.7697720527648926,
+    "UTC_time_of_completion": "2025-02-17 05:40:02"
 }
