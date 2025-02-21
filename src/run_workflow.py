@@ -12,9 +12,10 @@ def main():
         args = parser.parse_args()
         
         workflow = WorkFlowFactory.create_workflow(args.workflow, args.config)
+
         workflow.start()
     except Exception as e:
-        logger.error(f"Error: {e}")
+        logger.error(e, exc_info=True)
 
 if __name__ == "__main__":
     main()
