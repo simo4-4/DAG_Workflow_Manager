@@ -2,8 +2,7 @@ import argparse
 import logging
 from .workflow_management import WorkFlowFactory
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
 
 def main():
     try:

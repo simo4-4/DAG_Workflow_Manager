@@ -9,9 +9,7 @@ from .task import RequestTask, SyncTask, Task
 from src.user_functions.offer_workflow_functions import combiner_task, extract_task, load_task, transform_task
 from src.api.prediction_ep import Prediction
 
-logging.basicConfig()
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
 
 class IWorkFlow(ABC):
     @abstractmethod

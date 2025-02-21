@@ -6,7 +6,7 @@ from typing import List, Tuple
 import aiohttp
 import polars as pl
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 class Task(ABC):
     def __init__(self, name, func, dependencies=None):

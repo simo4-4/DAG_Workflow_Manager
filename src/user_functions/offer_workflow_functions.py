@@ -5,7 +5,7 @@ import polars as pl
 from pydantic import BaseModel
 import asyncio
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 def extract_task(file_path: str) -> Tuple[pl.DataFrame, int, int]:
     df = pl.read_csv(file_path)
