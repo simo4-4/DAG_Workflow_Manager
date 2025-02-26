@@ -44,7 +44,7 @@ def transform_task(extracted_data: pl.DataFrame) -> Tuple[pl.DataFrame, int, int
     member_aggregated_df_last_3 = member_time_sorted_df.group_by("memberId").agg([
         pl.col("lastTransactionPointsBought").tail(3).mean().alias("LAST_3_TRANSACTIONS_AVG_POINTS_BOUGHT"),
         pl.col("lastTransactionRevenueUSD").tail(3).mean().alias("LAST_3_TRANSACTIONS_AVG_REVENUE_USD"),
-        (pl.lit(current_day).cast(pl.Datetime) - (pl.first("LAST_TRANSACTION_TS"))).dt.total_days().alias("DAYS_SINCE_LAST_TRANSACTION")
+        (pl.lit(current_day).cast(pl.Datetime) - (pl.last("LAST_TRANSACTION_TS"))).dt.total_days().alias("DAYS_SINCE_LAST_TRANSACTION")
     ])
 
     joined_member_df = member_aggregated_df_last_3.join(member_aggregated_df, on="memberId", how="left")

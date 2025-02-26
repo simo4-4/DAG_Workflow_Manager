@@ -1,3 +1,5 @@
+from datetime import datetime
+from unittest.mock import patch
 from src.user_functions.offer_workflow_functions import transform_task
 import polars as pl
 import pytest
@@ -70,3 +72,27 @@ def test_transform_task_last_3_transactions():
     
     last_3_points = transformed_df.select('LAST_3_TRANSACTIONS_AVG_POINTS_BOUGHT').item()
     assert last_3_points == pytest.approx(400.0)  # (300 + 400 + 500) / 3
+
+def test_transform_task_days_since_last_transaction():
+    """Test if transform_task correctly gets the days since the last transaction"""
+    mock_df = pl.DataFrame({
+        'memberId': [1, 1, 1, 1, 1],
+        'lastTransactionUtcTs': [
+            '2024-01-01 10:00:00',
+            '2024-01-02 11:00:00',
+            '2024-01-03 12:00:00',
+            '2024-01-04 13:00:00',
+            '2024-01-05 14:00:00'
+        ],
+        'lastTransactionPointsBought': [100, 200, 300, 400, 500],
+        'lastTransactionRevenueUSD': [10, 20, 30, 40, 50],
+        'lastTransactionType': ['buy', 'gift', 'redeem', 'buy', 'gift']
+    })
+
+    fixed_time = datetime(2024, 1, 6, 14, 0, 0)
+    with patch('src.user_functions.offer_workflow_functions.datetime') as mock_datetime:
+        mock_datetime.now.return_value = fixed_time
+        transformed_df, processed_count, failure_count = transform_task(mock_df)
+    
+    days_since_last_transaction = transformed_df.select('DAYS_SINCE_LAST_TRANSACTION').item()
+    assert days_since_last_transaction == 1
