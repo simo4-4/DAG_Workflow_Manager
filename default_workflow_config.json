@@ -1,10 +1,10 @@
 {
-    "name": "plusgrade",
+    "name": "Workflow",
     "description": "Reads from a CSV and combines the results of a couple APIs",
     "csv_path": "member_data.csv",
     "ats_url": "http://localhost:8000/ml/ats/predict",
     "resp_url": "http://localhost:8000/ml/resp/predict",
     "offer_url": "http://localhost:8000/offer/assign",
-    "result_output_path": "plusgrade_workflow_result.csv",
-    "performance_output_path": "plusgrade_performance_summary.json"
+    "result_output_path": "workflow_result.csv",
+    "performance_output_path": "performance_summary.json"
 }

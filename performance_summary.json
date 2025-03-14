@@ -1,0 +1,57 @@
+{
+    "name": "Workflow",
+    "description": "Reads from a CSV and combines the results of a couple APIs",
+    "tasks": {
+        "Extract": {
+            "status": "Success",
+            "execution_time (sec)": 0.0038428306579589844,
+            "processed_item_count": 4335,
+            "item_failure_count": 0,
+            "throughput (item/sec)": 1128074.6891673906
+        },
+        "Transform": {
+            "status": "Success",
+            "execution_time (sec)": 0.008818864822387695,
+            "processed_item_count": 890,
+            "item_failure_count": 0,
+            "throughput (item/sec)": 100920.01838384384
+        },
+        "ATS Predict": {
+            "status": "Success",
+            "execution_time (sec)": 0.5763750076293945,
+            "processed_item_count": 890,
+            "item_failure_count": 0,
+            "throughput (item/sec)": 1544.13357314109
+        },
+        "RESP Predict": {
+            "status": "Success",
+            "execution_time (sec)": 0.5766007900238037,
+            "processed_item_count": 890,
+            "item_failure_count": 0,
+            "throughput (item/sec)": 1543.528929197718
+        },
+        "ATS-RESP Combiner": {
+            "status": "Success",
+            "execution_time (sec)": 0.0005960464477539062,
+            "processed_item_count": 890,
+            "item_failure_count": 0,
+            "throughput (item/sec)": 1493172.224
+        },
+        "Offer Recommendation": {
+            "status": "Success",
+            "execution_time (sec)": 0.30124998092651367,
+            "processed_item_count": 890,
+            "item_failure_count": 0,
+            "throughput (item/sec)": 2954.357033526601
+        },
+        "Load": {
+            "status": "Success",
+            "execution_time (sec)": 0.002273082733154297,
+            "processed_item_count": 890,
+            "item_failure_count": 0,
+            "throughput (item/sec)": 391538.762324313
+        }
+    },
+    "total_execution_time (sec)": 0.8940739631652832,
+    "UTC_time_of_completion": "2025-03-14 21:25:33"
+}

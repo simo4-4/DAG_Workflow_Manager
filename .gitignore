@@ -168,5 +168,7 @@ output.csv
 #venv environment
 plusgrade_env/
 workflow_venv/
-performance_summary.json
 src/thread_test.py
+
+plusgrade_performance_summary.json
+plusgrade_workflow_result.csv
